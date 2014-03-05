@@ -53,8 +53,9 @@ object Pickles {
 
 object Pickle {
   def apply[T: Pickles](p: T) = implicitly[Pickles[T]].pickle(p)
-  def dumps[T: Pickles, O](p: T)(out: OutputStream) = {
-    val payload = cPickle.dumps(apply(p))
+  def dumps[T: Pickles](p: T) = cPickle.dumps(apply(p))
+  def write[T: Pickles](out: OutputStream)(p: T) = {
+    val payload = dumps(p)
     val header  = ByteBuffer.allocate(4).putInt(payload.__len__()).array()
     out.write(header)
     out.write(payload.toBytes())
